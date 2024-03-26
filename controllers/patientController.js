@@ -18,6 +18,36 @@ const createPatient = catchAsync(async (req, res) => {
   })
 });
 
+const getAllPatient = catchAsync(async (req,res) => {
+  const {hospitalId} = req.user;
+
+  const patients = await Patient.find({hospitalId});
+
+  res.status(200).json({
+    status:"success",
+    data:{
+      patients
+    }
+  })
+});
+
+const updatePatientData = catchAsync(async (req, res) => {
+  const {id} = req.params;
+
+  const updatePatient = await Patient.findByIdAndUpdate(id,  {
+    ...req.body
+  });
+
+  res.status(200).json({
+    status: "success",
+    data: {
+      updatePatient,
+    }
+  });
+});
+
 module.exports = {
   createPatient,
+  getAllPatient,
+  updatePatientData
 }

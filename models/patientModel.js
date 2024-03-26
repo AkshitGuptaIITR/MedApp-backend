@@ -61,6 +61,10 @@ const patientSchema = new mongoose.Schema({
   blueness: {
     type: Boolean,
     default: false,
+  },
+  oaeScreening: {
+    type: Boolean,
+    default: false,
   }
 }, {
   toJSON: { virtuals: true },
