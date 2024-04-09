@@ -1,9 +1,13 @@
 const Patient = require("../models/patientModel");
 const catchAsync = require("../utils/catchAsync");
+const { convertYYYYMMDDToDate } = require("../utils/functions");
 
 const createPatient = catchAsync(async (req, res) => {
   const { id, hospitalId } = req.user;
 
+  if (req.body.dob) {
+    req.body.dob = convertYYYYMMDDToDate(req.body.dob);
+  }
   const newPatient = await Patient.create({
     addedBy: id,
     hospitalId,
@@ -18,23 +22,23 @@ const createPatient = catchAsync(async (req, res) => {
   })
 });
 
-const getAllPatient = catchAsync(async (req,res) => {
-  const {hospitalId} = req.user;
+const getAllPatient = catchAsync(async (req, res) => {
+  const { hospitalId } = req.user;
 
-  const patients = await Patient.find({hospitalId});
+  const patients = await Patient.find({ hospitalId });
 
   res.status(200).json({
-    status:"success",
-    data:{
+    status: "success",
+    data: {
       patients
     }
   })
 });
 
 const updatePatientData = catchAsync(async (req, res) => {
-  const {id} = req.params;
+  const { id } = req.params;
 
-  const updatePatient = await Patient.findByIdAndUpdate(id,  {
+  const updatePatient = await Patient.findByIdAndUpdate(id, {
     ...req.body
   });
 
