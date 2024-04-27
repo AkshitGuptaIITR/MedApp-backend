@@ -12,6 +12,18 @@ const createHospital = catchAsync(async (req, res, next) => {
   })
 });
 
+const getAllCities = catchAsync(async (req,res) => {
+  const cities = await Hospital.distinct("city");
+
+  res.status(200).json({
+    status: "success",
+    data: {
+      cities
+    }
+  })
+})
+
 module.exports = {
-  createHospital
+  createHospital,
+  getAllCities,
 }
