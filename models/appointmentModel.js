@@ -19,6 +19,10 @@ const appointmentModel = new mongoose.Schema({
     type: mongoose.Types.ObjectId,
     ref: "User",
     required: [true, "User Id must be provided."]
+  },
+  reminder: {
+    type: Boolean,
+    default: false
   }
 }, {
   toJSON: { virtuals: true },

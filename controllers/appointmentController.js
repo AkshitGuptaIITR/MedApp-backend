@@ -1,8 +1,10 @@
+const Appointment = require("../models/appointmentModel");
+const Hospital = require("../models/hospitalModel");
 const catchAsync = require("../utils/catchAsync");
 
 const createAppointment = catchAsync(async (req, res) => {
   const { id: logged_in_user_id, hospitalId: logged_in_hospital_id } = req.user;
-  const { appointmentDate, patientId, hospitalId } = req.body;
+  const { appointmentDate, patientId, hospitalId, reminder } = req.body;
 
   if(!appointmentDate || !patientId || !hospitalId) {
     return res.status(400).json({
@@ -22,7 +24,8 @@ const createAppointment = catchAsync(async (req, res) => {
     patientId,
     hospitalId,
     addedBy: logged_in_user_id,
-    appointmentDate
+    appointmentDate,
+    reminder: Boolean(reminder),
   });
 
   const hospital_data = await Hospital.findById(hospitalId);
