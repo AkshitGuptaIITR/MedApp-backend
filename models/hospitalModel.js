@@ -20,6 +20,7 @@ const hospitalSchema = new mongoose.Schema(
         ref: "Patient",
       },
     ],
+    image: String,
   },
   {
     timestamps: true,

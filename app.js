@@ -6,6 +6,7 @@ const userRoutes = require("./routes/userRoutes");
 const hospitalRouter = require("./routes/hospitalRoutes");
 const patientRouter = require("./routes/patientRoutes");
 const oaeRouter = require("./routes/oaeRoutes");
+const appointmentRouter = require("./routes/appointmentRoutes");
 const AppError = require("./utils/AppError");
 const globalErrorHandler = require("./controllers/errorController");
 const morgan = require("morgan");
@@ -44,6 +45,7 @@ app.use("/api/v1/user", userRoutes);
 app.use("/api/v1/hospital", hospitalRouter);
 app.use("/api/v1/patient", patientRouter);
 app.use("/api/v1/oae", oaeRouter);
+app.use("/api/v1/appointment", appointmentRouter);
 
 app.use("*", (req, res, next) => {
   next(new AppError(`Can't find ${req.originalUrl} on this server!`, 404));
