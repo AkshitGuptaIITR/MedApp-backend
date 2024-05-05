@@ -10,6 +10,10 @@ const hospitalSchema = new mongoose.Schema(
     latitude: mongoose.Types.Decimal128,
     city: String,
     state: String,
+    address: {
+      type: String,
+      required: [true, "Hospital must have an address."],
+    },
     patients: [
       {
         type: mongoose.Schema.Types.ObjectId,
