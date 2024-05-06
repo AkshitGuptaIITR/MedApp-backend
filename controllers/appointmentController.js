@@ -1,43 +1,58 @@
 const Appointment = require("../models/appointmentModel");
 const Hospital = require("../models/hospitalModel");
+const OAE = require("../models/oaeScreening");
 const catchAsync = require("../utils/catchAsync");
+const { convertYYYYMMDDToDate } = require("../utils/functions");
 
 const createAppointment = catchAsync(async (req, res) => {
-  const { id: logged_in_user_id, hospitalId: logged_in_hospital_id } = req.user;
-  const { appointmentDate, patientId, hospitalId, reminder } = req.body;
+  const { id: logged_in_user_id } = req.user;
+  let { appointmentDate, patientId, hospitalId, oaeId } = req.body;
 
-  if(!appointmentDate || !patientId || !hospitalId) {
+  if (oaeId) {
+    const oaeRecord = await OAE.findById(oaeId);
+
+    if (!oaeRecord) {
+      return res.status(404).json({
+        status: "fail",
+        message: "OAE record not found"
+      });
+    }
+
+    patientId = oaeRecord.patientId;
+  }
+
+  if (!appointmentDate || !patientId || !hospitalId) {
     return res.status(400).json({
       status: "fail",
       message: "Please provide all required fields"
     });
   }
 
-  if(logged_in_hospital_id !== hospitalId) {
-    return res.status(401).json({
-      status: "fail",
-      message: "You are not authorized to create appointment for this hospital"
-    });
-  }
+  appointmentDate = convertYYYYMMDDToDate(appointmentDate);
 
   const newAppointment = await Appointment.create({
     patientId,
     hospitalId,
     addedBy: logged_in_user_id,
     appointmentDate,
-    reminder: Boolean(reminder),
   });
-
-  const hospital_data = await Hospital.findById(hospitalId);
 
   res.status(201).json({
     status: "success",
-    data: {
-      appointment: newAppointment,
-      hospital: hospital_data
-    }
+    data: newAppointment
   });
 });
+
+const updateAppointment = catchAsync(async (req, res) => {
+  const { id } = req.params;
+
+  const updatedRecord = await Appointment.findByIdAndUpdate(id, req.body);
+
+  return res.status(200).json({
+    status: "success",
+    data: updatedRecord
+  })
+})
 
 const getAllAppointments = catchAsync(async (req, res) => {
   const { hospitalId } = req.user;
@@ -55,4 +70,5 @@ const getAllAppointments = catchAsync(async (req, res) => {
 module.exports = {
   createAppointment,
   getAllAppointments,
+  updateAppointment,
 }

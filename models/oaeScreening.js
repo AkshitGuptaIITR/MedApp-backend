@@ -3,13 +3,20 @@ const mongoose = require("mongoose");
 const oaeScreening = new mongoose.Schema({
   numberOfOAETest: {
     type: Number,
-    required: [true, "Please provide number of OAETest."],
   },
   patientId: {
     type: mongoose.Types.ObjectId,
     required: [true, "Patient Id is required."],
   },
   lastOAEScreening: Date,
+  wasOAEConducted: {
+    type: Boolean,
+    default: false,
+  },
+  lastOAEResult: {
+    type: Boolean,
+    default: false,
+  }
 }, {
   toJSON: { virtuals: true },
   timestamps: true,

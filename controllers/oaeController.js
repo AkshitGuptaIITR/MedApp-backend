@@ -4,16 +4,10 @@ const { convertYYYYMMDDToDate } = require("../utils/functions");
 
 const createOAERecord = catchAsync(async (req, res) => {
   const { id } = req.params;
-  const { numberOfOAETest } = req.body;
-  if (!numberOfOAETest) {
-    res.status(400).json({
-      status: "fail",
-      message: "Please provide number of test"
-    })
-  }
+  const { wasOAEConducted } = req.body;
 
   const OAETest = await OAE.create({
-    numberOfOAETest,
+    wasOAEConducted,
     patientId: id
   });
 
@@ -25,15 +19,12 @@ const createOAERecord = catchAsync(async (req, res) => {
 
 const updateOAEData = catchAsync(async (req, res) => {
   const { id } = req.params;
-  const { numberOfOAETest, lastOAEScreening } = req.body;
-  let updateRecord = {};
-  if (numberOfOAETest) {
-    updateRecord.numberOfOAETest = numberOfOAETest;
+  
+  if (req.body.lastOAEScreening) {
+    req.body.lastOAEScreening = convertYYYYMMDDToDate(req.body.lastOAEScreening);
   }
-  if (lastOAEScreening) {
-    updateRecord.lastOAEScreening = convertYYYYMMDDToDate(lastOAEScreening);
-  }
-  updatedRecord = await OAE.findByIdAndUpdate(id, updateRecord);
+
+  const updatedRecord = await OAE.findByIdAndUpdate(id, req.body);
 
   res.status(200).json({
     status: "success",

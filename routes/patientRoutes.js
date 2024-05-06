@@ -6,6 +6,6 @@ const router = express.Router();
 
 router.post("/", protect, createPatient);
 router.get("/",protect, getAllPatient);
-router.patch("/:id", protect, updatePatientData);
+router.put("/:id", protect, updatePatientData);
 
 module.exports = router;
