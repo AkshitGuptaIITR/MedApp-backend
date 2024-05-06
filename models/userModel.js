@@ -31,11 +31,6 @@ const userSchema = new mongoose.Schema(
         "Please Enter a valide mobile number.",
       ],
     },
-    hospitalId: {
-      type: mongoose.Types.ObjectId,
-      required: [true, "User must be related to hospital."],
-      ref: "Hospital",
-    },
     active: {
       type: Boolean,
       default: true,

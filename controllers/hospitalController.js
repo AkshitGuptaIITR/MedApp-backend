@@ -41,8 +41,25 @@ const getAllHospitalsForCity = catchAsync(async (req, res) => {
   })
 });
 
+const getAllHospitalsForSpecialization = catchAsync(async (req, res) => {
+  const { specialization } = req.params;
+
+  if (!specialization) return res.status(400).json({
+    status: "fail",
+    message: "Please provide specialization"
+  });
+
+  const hospitals = await Hospital.find({ specialization });
+
+  res.status(200).json({
+    status: "success",
+    data: hospitals
+  })
+})
+
 module.exports = {
   createHospital,
   getAllCities,
   getAllHospitalsForCity,
+  getAllHospitalsForSpecialization,
 }

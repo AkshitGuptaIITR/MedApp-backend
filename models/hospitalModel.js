@@ -21,6 +21,10 @@ const hospitalSchema = new mongoose.Schema(
       },
     ],
     image: String,
+    specialization: {
+      type: [String],
+      enum: ["OAE", "BERA", "SPEECH_THERAPY"]
+    },
   },
   {
     timestamps: true,
