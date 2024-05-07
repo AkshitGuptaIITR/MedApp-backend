@@ -8,7 +8,6 @@ const patientSchema = new mongoose.Schema({
   hospitalId: {
     type: mongoose.Types.ObjectId,
     ref: 'Hospital',
-    required: [true, "Hospital Id is required."]
   },
   addedBy: {
     type: mongoose.Types.ObjectId,
