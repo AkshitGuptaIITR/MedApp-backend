@@ -1,5 +1,4 @@
 const Appointment = require("../models/appointmentModel");
-const Hospital = require("../models/hospitalModel");
 const OAE = require("../models/oaeScreening");
 const catchAsync = require("../utils/catchAsync");
 const { convertYYYYMMDDToDate } = require("../utils/functions");

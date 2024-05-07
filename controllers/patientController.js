@@ -45,17 +45,26 @@ const getAllPatient = catchAsync(async (req, res) => {
     {
       $group: {
         _id: "$startingChar",
-        patients: { $push: "$$ROOT" }
+        patients: { $push: "$$ROOT" },
       }
     },
     {
-      $sort: { normalizedField: -1, startingChar: -1 }
+      $sort: { normalizedField: -1, startingChar: -1, _id: 1 }
     },
   ]);
 
+  let totalCount = 0;
+
+  patients.forEach((patient) => {
+    const count = patient.patients.length;
+
+    totalCount += count;
+  });
+
   res.status(200).json({
     status: "success",
-    data: patients
+    data: patients,
+    totalCount,
   })
 });
 
@@ -77,7 +86,7 @@ const updatePatientData = catchAsync(async (req, res) => {
 const deletePatients = catchAsync(async (req, res) => {
   const { patientIds } = req.body;
 
-  if(!Array.isArray(patientIds) || patientIds.length === 0) {
+  if (!Array.isArray(patientIds) || patientIds.length === 0) {
     return res.status(400).json({
       status: "fail",
       message: "Please provide an array of patient ids"
