@@ -1,3 +1,4 @@
+const { default: mongoose } = require("mongoose");
 const Patient = require("../models/patientModel");
 const catchAsync = require("../utils/catchAsync");
 const { convertYYYYMMDDToDate } = require("../utils/functions");
@@ -23,15 +24,36 @@ const createPatient = catchAsync(async (req, res) => {
 });
 
 const getAllPatient = catchAsync(async (req, res) => {
-  const { hospitalId } = req.user;
+  const { _id } = req.user;
 
-  const patients = await Patient.find({ hospitalId });
+  const patients = await Patient.aggregate([
+    {
+      $match: { addedBy: _id }
+    },
+    {
+      $project: {
+        name: 1,
+        _id: 1,
+        parentName: 1,
+        contactNumber: 1,
+        normalizedField: { $toLower: "$parentName" },
+        startingChar: { $substr: [{ $toLower: "$parentName" }, 0, 1] }
+      }
+    },
+    {
+      $group: {
+        _id: "$startingChar",
+        patients: { $push: "$$ROOT" }
+      }
+    },
+    {
+      $sort: { normalizedField: -1, startingChar: -1 }
+    },
+  ]);
 
   res.status(200).json({
     status: "success",
-    data: {
-      patients
-    }
+    data: patients
   })
 });
 
@@ -50,8 +72,27 @@ const updatePatientData = catchAsync(async (req, res) => {
   });
 });
 
+const deletePatients = catchAsync(async (req, res) => {
+  const { patientIds } = req.body;
+
+  if(!Array.isArray(patientIds) || patientIds.length === 0) {
+    return res.status(400).json({
+      status: "fail",
+      message: "Please provide an array of patient ids"
+    })
+  }
+
+  console.log(patientIds)
+  await Patient.deleteMany({ _id: { $in: patientIds } });
+  res.status(204).json({
+    status: "success",
+    message: "Patients deleted successfully"
+  })
+})
+
 module.exports = {
   createPatient,
   getAllPatient,
-  updatePatientData
+  updatePatientData,
+  deletePatients,
 }
