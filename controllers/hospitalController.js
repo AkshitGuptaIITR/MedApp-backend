@@ -55,6 +55,40 @@ const getAllHospitalsForSpecialization = catchAsync(async (req, res) => {
     status: "success",
     data: hospitals
   })
+});
+
+const getHospitalById = catchAsync(async (req, res) => {
+  const { id } = req.params;
+
+  const hospital = await Hospital.findById(id).populate("specialists");
+
+  if (!hospital) return res.status(404).json({
+    status: "fail",
+    message: "Hospital not found"
+  })
+
+  res.status(200).json({
+    status: "success",
+    data: hospital
+  })
+})
+
+const updateHospitalData = catchAsync(async(req, res) => {
+  const { id } = req.params;
+
+  if(!id){
+    return res.status(400).json({
+      status: "fail",
+      message: "Please provide hospital id"
+    })
+  }
+
+  await Hospital.findByIdAndUpdate(id, req.body);
+
+  res.status(200).json({
+    status: "success",
+    message: "Hospital data updated successfully"
+  })
 })
 
 module.exports = {
@@ -62,4 +96,6 @@ module.exports = {
   getAllCities,
   getAllHospitalsForCity,
   getAllHospitalsForSpecialization,
+  getHospitalById,
+  updateHospitalData,
 }

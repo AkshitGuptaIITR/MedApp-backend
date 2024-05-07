@@ -25,6 +25,14 @@ const hospitalSchema = new mongoose.Schema(
       type: [String],
       enum: ["OAE", "BERA", "SPEECH_THERAPY"]
     },
+    facilities: {
+      type: [String]
+    },
+    specialists: {
+      type: [mongoose.Types.ObjectId],
+      ref: "Specialists"
+    },
+    diagnosis: [String]
   },
   {
     timestamps: true,
