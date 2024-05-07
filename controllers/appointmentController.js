@@ -55,15 +55,13 @@ const updateAppointment = catchAsync(async (req, res) => {
 })
 
 const getAllAppointments = catchAsync(async (req, res) => {
-  const { hospitalId } = req.user;
+  const { _id } = req.user;
 
-  const appointments = await Appointment.find({ hospitalId });
+  const appointments = await Appointment.find({ addedBy: _id, appointmentDate: { $gte: new Date() } }).populate("patientId");
 
   res.status(200).json({
     status: "success",
-    data: {
-      appointments
-    }
+    data: appointments
   });
 })
 

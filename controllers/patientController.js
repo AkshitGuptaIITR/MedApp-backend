@@ -2,6 +2,8 @@ const { default: mongoose } = require("mongoose");
 const Patient = require("../models/patientModel");
 const catchAsync = require("../utils/catchAsync");
 const { convertYYYYMMDDToDate } = require("../utils/functions");
+const Appointment = require("../models/appointmentModel");
+const OAE = require("../models/oaeScreening");
 
 const createPatient = catchAsync(async (req, res) => {
   const { id, hospitalId } = req.user;
@@ -82,8 +84,9 @@ const deletePatients = catchAsync(async (req, res) => {
     })
   }
 
-  console.log(patientIds)
   await Patient.deleteMany({ _id: { $in: patientIds } });
+  await Appointment.deleteMany({ patientId: { $in: patientIds } });
+  await OAE.deleteMany({ patientId: { $in: patientIds } });
   res.status(204).json({
     status: "success",
     message: "Patients deleted successfully"
