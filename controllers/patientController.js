@@ -100,6 +100,31 @@ const deletePatients = catchAsync(async (req, res) => {
     status: "success",
     message: "Patients deleted successfully"
   })
+});
+
+const getPatientData = catchAsync(async (req, res) => {
+  const { id } = req.params;
+
+  if (!id) {
+    return res.status(400).json({
+      status: "fail",
+      message: "Please provide patient id"
+    })
+  }
+
+  const patient = await Patient.findById(id);
+
+  const oae = await OAE.countDocuments({ patientId: id });
+
+  if (!patient) return res.status(404).json({
+    status: "fail",
+    message: "Patient not found"
+  })
+
+  res.status(200).json({
+    status: "success",
+    data: { patient, oae }
+  })
 })
 
 module.exports = {
@@ -107,4 +132,5 @@ module.exports = {
   getAllPatient,
   updatePatientData,
   deletePatients,
+  getPatientData,
 }
